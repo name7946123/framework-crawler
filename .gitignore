@@ -21,3 +21,6 @@
 # ignore encore builds
 /web/build
 /node_modules
+
+#IDE metadata
+/.idea
