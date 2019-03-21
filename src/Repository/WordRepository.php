@@ -47,4 +47,41 @@ class WordRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findOneByValueAndFrom($value, $from)
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.value = :val')
+            ->andWhere('w.from = :from')
+            ->setParameter('val', $value)
+            ->setParameter('from', $from)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function createOrUpdate($array)
+    {
+        $entityManager = $this->getEntityManager();
+
+        try {
+            $word = $this->findOneByValueAndFrom($array['value'], $array['from']);
+
+            if (!empty($word)) {
+                $counts = $word->getCounts() + 1;
+                $word->setCounts($counts);
+                $entityManager->flush();
+            } else {
+                $word = new Word();
+                $word->setCounts(1);
+                $word->setValue($array['value']);
+                $word->setFrom($array['from']);
+                $entityManager->persist($word);
+                $entityManager->flush();
+            }
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());exit;
+        }
+
+        return true;
+    }
 }

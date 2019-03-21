@@ -27,7 +27,7 @@ class Word
     private $counts;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="`from`", type="string")
      */
     private $from;
 
